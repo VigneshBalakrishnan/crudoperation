@@ -1,0 +1,152 @@
+<table mdbTable striped="true">
+  <thead class="black white-text">
+    <tr>
+      <th *ngFor="let head of headElements" scope="col">{{head}} </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr mdbTableCol *ngFor="let data of gridData;let i = index;">
+      <td>{{data.name}}</td>
+      <td>{{data.cpus}}</td>
+      <td (click)="chartModel.show();">{{data.memory}}</td>
+      <td>{{data.storage}}</td>
+      <td>{{data.ip}}</td>
+      <td>{{data.network}}</td>
+      <td (click)="mapModel.show();loadMap(data);">{{data.location}}</td>
+      <td><button type="button" mdbBtn color="primary" class="relative waves-light" (click)="basicModal.show();editData(data)" mdbWavesEffect>edit</button><button type="button" class="btn btn-danger" (click)="delete(i)">Delete</button></td>
+    </tr>
+  </tbody>
+</table>
+<button type="button" mdbBtn color="primary" class="relative waves-light" (click)="basicModal.show();addDatas()" mdbWavesEffect>Add</button>
+
+<div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="basicModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">EDIT FORM</h4>
+      </div>
+      <div class="modal-body mx-12">
+        <div class="md-form mb-4">
+          <input type="text" id="name" class="form-control validate" [(ngModel)]="formModel.name"
+            mdbInput>
+          <label data-error="wrong" data-success="right" for="name">Server name</label>
+        </div>
+
+        <div class="md-form mb-4">
+          <div class="row">
+              <label data-error="wrong" data-success="right" for="cps">No of CPU's</label>
+          </div>
+        </div>
+        <div class="md-form mb-4">
+            <select id="cps" class="browser-default custom-select" [(ngModel)]="formModel.cpus">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+              </select>
+        </div>
+        <div class="md-form mb-4">
+            <div class="row">
+                <label data-error="wrong" data-success="right" for="memory">Total Memory</label>
+            </div>
+          </div>
+          <div class="md-form mb-4">
+              <select id="memory" class="browser-default custom-select" [(ngModel)]="formModel.memory">
+                  <option value="250GB">250GB</option>
+                  <option value="350GB">350GB</option>
+                  <option value="450GB">450GB</option>
+                </select>
+          </div>
+          <div class="md-form mb-4">
+              <div class="row">
+                  <label data-error="wrong" data-success="right" for="storage">Total Storage</label>
+              </div>
+            </div>
+            <div class="md-form mb-4">
+                <select id="storage" class="browser-default custom-select" [(ngModel)]="formModel.storage">
+                    <option value="5">5</option>
+                    <option value="7">7</option>
+                    <option value="8">9</option>
+                  </select>
+            </div>
+            <div class="md-form mb-4">
+                <input type="text" id="ip" class="form-control validate" [(ngModel)]="formModel.ip"
+                  mdbInput>
+                <label data-error="wrong" data-success="right" for="ip">IP Address</label>
+              </div>
+              <div class="md-form mb-4">
+                  <div class="row">
+                      <label data-error="wrong" data-success="right" for="network">Network Speed</label>
+                  </div>
+                </div>
+                <div class="md-form mb-4">
+                    <select id="storage" class="browser-default custom-select" [(ngModel)]="formModel.network">
+                        <option value="1">10 Gbps</option>
+                        <option value="2">20 Gbps</option>
+                        <option value="3">30 Gbps</option>
+                      </select>
+                </div>
+                <div class="md-form mb-4">
+                    <input type="text" id="ip" class="form-control validate" [(ngModel)]="formModel.location"
+                      mdbInput>
+                    <label data-error="wrong" data-success="right" for="location">Location</label>
+                  </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect (click)="submitForm(formModel);basicModal.hide()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #mapModel="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myMapModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="mapModel.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h6 class="modal-title w-100" id="myModalLabel">Location</h6>
+      </div>
+      <div class="modal-body mx-12">
+          <agm-map [latitude]="lat" [longitude]="lng">
+              <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+            </agm-map>
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect (click)="submitForm(formModel);basicModal.hide()">Save changes</button>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<div mdbModal #chartModel="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myChartModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="chartModel.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h6 class="modal-title w-100" id="myModalLabel">Location</h6>
+        </div>
+        <div class="modal-body mx-12">
+            <div style="display: block">
+                <canvas mdbChart
+                    [chartType]="chartType"
+                    [datasets]="chartDatasets"
+                    [labels]="chartLabels"
+                    [colors]="chartColors"
+                    [options]="chartOptions"
+                    [legend]="true">
+                </canvas>
+              </div>
+        </div>
+        <!-- <div class="modal-footer">
+          <button type="button" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect (click)="submitForm(formModel);basicModal.hide()">Save changes</button>
+        </div> -->
+      </div>
+    </div>
+  </div>
